@@ -1,0 +1,16 @@
+letter keys	13 x46
+
+shift l		36
+shift r		46
+
+caps		27
+
+tab		22
+
+space		103
+
+enter		36
+
+backspace	32
+
+\|		22
