@@ -1,141 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<link rel="stylesheet" href="/_/reset.css" />
-<link rel="stylesheet" href="/_/style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>This is not the page you are looking for.</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://www.grc.com/js/uheprng.js"></script>
-<script type="text/javascript">
-//(c) 2011 - Neil Vallon
-var easy, fullKeyboard, text, running, txtLen, maxCount, monkeyCount, caps, character, monkeysInBox;
-var miniKey = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','.',"\n",' '];
-var keyboard = [
-		[0,		597,	['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']],
-		[598,	700,	' '],
-		[701,	736,	"\n"],
-		[737,	768,	'BACK'],
-		[769,	795,	'CAPS'],
-		[796,	817,	"\t"],
-		[818,	839, 	'\\'],
-		[840,	892,	['~','!','@','#','$','%','^','&','*','(',')','_','+','Q','W','E','R','T','Y','U','I','O','P','{','}','A','S','D','F','G','H','J','K','L',':','"','Z','X','C','V','B','N','M','<','>','?']],
-		[893,	894,	'|']];
-var randomness = uheprng();
-
-function mt_rand(min, max){
-	number = 0+'.'+randomness(10000000000);
-    return Math.floor(number * (max - min + 1)) + min;
-}
-
-
-function setUp(){
-	running = 0;
-	maxCount = -1;
-	monkeyCount = 0;
-	caps = 0;
-	$("#startButton").val('Start');
-	$("#raw").val('');
-	$("#stats").val('');
-	$("#best").val('');
-	$('#inputText').attr('disabled', false);
-}
-
-
-function typeMonkeyType(){
-	$("#startButton").val(function (){ return ($("#startButton").val() == 'Start')?'Stop':'Start'; }); //Change Button
-	$('#inputText').attr('disabled', true);
-	
-	text = $("#inputText").val();
-	easy = $("#easy").is(':checked');
-	monkeysInBox = $("#monkeyBox").val();
-	fullKeyboard = easy?false:$("#fullKey").is(':checked');
-	
-	if(easy) text = text.toLowerCase().replace(/[^a-z.\n ]/g, '');
-	txtLen = text.length;
-	
-	monkey();
-}
-
-
-function getChar(){
-	if(!fullKeyboard) return miniKey[mt_rand(0,miniKey.length-1)];
-	keyCode = mt_rand(0, keyboard[8][1]);
-	$.each(keyboard, function(key, group){
-		if(keyCode >= keyboard[key][0] && keyCode <= keyboard[key][1]){
-			character = $.isArray(keyboard[key][2])?keyboard[key][2][mt_rand(0, keyboard[key][2].length-1)]:keyboard[key][2];
-			if(caps && key == 0){ character = character.toUpperCase();}
-			return false;
-		}
-	});
-	return character;
-}
-
-function monkey(){
-	if(!running) return;
-
-		monkeyCount++;
-		
-		if(Math.ceil(monkeyCount/monkeysInBox) == monkeyCount/monkeysInBox)$("#raw").val(''); // alows more than one monkey into the bable also slows bable making it readable without slowing monkeys
-		currentCount = -1;
-		errors = 0;
-		monkeyPress = '';
-		//caps = 0;
-		for(x=0;x<txtLen;++x){
-			strChar = text.substr(x, 1);
-			rndChar = getChar();
-			
-			$("#raw").val($("#raw").val()+rndChar);
-			monkeyPress += rndChar;
-			
-			con=0;
-			switch(rndChar){
-				case 'BACK':
-					if(errors){
-						--errors;
-					}else if(currentCount+1) --currentCount;
-					x -= x?2:1;
-					con=1;
-					break;
-					
-				case 'CAPS':
-					caps = caps^1;
-					--x;
-					con=1;
-					break;
-			}
-			if(con) continue;
-			
-			if(errors >= 5) break;
-			if(!errors && strChar == rndChar){
-				++currentCount;
-			}else ++errors;
-		}
-		
-		if(currentCount > maxCount){
-			maxCount = currentCount;
-			$("#best").val('Monkey #'+monkeyCount+' - '+(maxCount+1)+' Letters\n_____________________\n'+monkeyPress);
-		}
-
-		out = monkeyCount+' Monkeys Created.\n'
-		$("#stats").val(out);
-		
-		
-		if(maxCount == txtLen){
-			running = false;
-			$("#startButton").val('Start');
-		}
-
-	setTimeout("monkey()",10);	
-}
-
-
-setUp();
-</script>
+<script src="js/monkeys.js"></script>
 </head>
+
 <body>
-
-
 <table style="width:900px;margin:auto;" cellpadding="6px" cellspacing="4">
 <tr>
 <td>Hamlet (or other works):</td>
@@ -159,13 +31,6 @@ Stats:<br /><textarea style="width:100%;height:31px;" disabled="disabled" id="st
 <td>Best Monkey:<br /><textarea id="best" style="width:100%;height:100px;" disabled="disabled"></textarea></td>
 </tr>
 <tr>
-<td colspan="2">
-*A smart monkey gets to use every key on a standard keyboard. This option also corrects for the probability of hitting each key based on size and whether or not shift is needed.<br /><br />
-Going between PHP and javascript is screwy. If the monkeys get out of control you can let me know <a href="http://neilvallon.com/contact.php">here</a>.
-</td>
-</tr>
-
-</table>
 
 </body>
 </html>
