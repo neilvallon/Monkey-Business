@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Untitled Document</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://www.grc.com/js/uheprng.js"></script>
+<script type="text/javascript">
+function in_array (needle, haystack, argStrict) {
+    // Checks if the given value exists in the array  
+    // 
+    // version: 1109.2015
+    // discuss at: http://phpjs.org/functions/in_array
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   improved by: vlado houba
+    // +   input by: Billy
+    // +   bugfixed by: Brett Zamir (http://brett-zamir.me)
+    // *     example 1: in_array('van', ['Kevin', 'van', 'Zonneveld']);
+    // *     returns 1: true
+    // *     example 2: in_array('vlado', {0: 'Kevin', vlado: 'van', 1: 'Zonneveld'});
+    // *     returns 2: false
+    // *     example 3: in_array(1, ['1', '2', '3']);
+    // *     returns 3: true
+    // *     example 3: in_array(1, ['1', '2', '3'], false);
+    // *     returns 3: true
+    // *     example 4: in_array(1, ['1', '2', '3'], true);
+    // *     returns 4: false
+    var key = '',
+        strict = !! argStrict;
+ 
+    if (strict) {
+        for (key in haystack) {
+            if (haystack[key] === needle) {
+                return true;
+            }
+        }
+    } else {
+        for (key in haystack) {
+            if (haystack[key] == needle) {
+                return true;
+            }
+        }
+    }
+ 
+    return false;
+}
+function mt_rand (min, max) {
+    randomness = uheprng();
+	number = 0+'.'+randomness(10000000000);
+    return Math.floor(number * (max - min + 1)) + min;
+}
+
+
+
+var easy, fullKeyboard, text, running, txtLen, maxCount, monkeyCount, caps, character;
+var charArray = new Array();
+var keyboard = [
+		[0,		597,	['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']],
+		[598,	700,	' '],
+		[701,	736,	"\n"],
+		[737,	768,	'BACK'],
+		[769,	795,	'CAPS'],
+		[796,	817,	"\t"],
+		[818,	839, 	'\\'],
+		[840,	892,	['~','!','@','#','$','%','^','&','*','(',')','_','+','Q','W','E','R','T','Y','U','I','O','P','{','}','A','S','D','F','G','H','J','K','L',':','"','Z','X','C','V','B','N','M','<','>','?']],
+		[893,	894,	'|']];
+
+function setUp(){
+	running = 0;
+	maxCount = 0;
+	monkeyCount = 0;
+	charArray = [];
+	$("#startButton").val('Start');
+	$("#raw").val('');
+	$("#stats").val('');
+	$("#best").val('');
+	$('#inputText').attr('disabled', false);
+}
+
+
+function genCharArray(){
+		for(i=0;i<txtLen;++i){
+			char = text.substr(i, 1);
+			if(!in_array(char, charArray)) charArray.push(char);
+		}
+}
+
+
+
+function typeMonkeyType(){
+	$("#startButton").val(function (){ return ($("#startButton").val() == 'Start')?'Stop':'Start'; }); //Change Button
+	$('#inputText').attr('disabled', true);
+	
+	text = $("#inputText").val();
+	easy = $("#easy").is(':checked');
+	fullKeyboard = easy?false:$("#fullKey").is(':checked');
+	
+	if(easy) text = text.toLowerCase().replace(/[^a-z0-9. ]/g, '');
+	txtLen = text.length;
+	
+	if(!fullKeyboard) genCharArray();
+	
+	monkey();
+}
+
+
+
+
+function getChar(){
+	if(!fullKeyboard) return charArray[mt_rand(0,charArray.length-1)];
+	keyCode = mt_rand(0, keyboard[8][1]);
+	//alert(keyCode);
+	$.each(keyboard, function(key, group){
+		if(keyCode >= keyboard[key][0] && keyCode <= keyboard[key][1]){
+			character = $.isArray(keyboard[key][2])?keyboard[key][2][mt_rand(0, keyboard[key][2].length-1)]:keyboard[key][2];
+			if(caps && key == 0){ character = character.toUpperCase();}
+			return false;
+		}
+	});
+	return character;
+}
+
+
+
+
+
+function monkey(){
+	if(!running) return;
+
+		//echo "\n\nNew Monkey\n";
+		monkeyCount++;
+		$("#raw").val('');
+		currentCount = 0;
+		errors = 0;
+		caps = 0;
+		for(x=0;x<txtLen;++x){
+			strChar = text.substr(x, 1);
+			rndChar = getChar();
+			
+			$("#raw").val($("#raw").val()+rndChar);
+			
+			con=0;
+			switch(rndChar){
+				case 'BACK':
+					if(errors){
+						errors=0;
+					}else if(currentCount) --currentCount;
+					if(x) x -= 2;
+					con=1;
+					break;
+					
+				case 'CAPS':
+					caps = caps^1;
+					con=1;
+					break;
+			}
+			if(con) continue;
+			
+			if(errors) break;
+			if(strChar != rndChar){
+				++errors;
+				continue;
+			}else ++currentCount;
+		}
+		if(currentCount > maxCount){
+			maxCount = currentCount;
+			$("#best").val(text.substr(0,maxCount));
+		}
+
+		out = monkeyCount+' Monkeys Created.\n'
+		out += 'Current Success:'+currentCount+' Letters.\n'
+		out += 'Highest Success:'+maxCount+' Letters.\n'
+		$("#stats").val(out);
+		
+		
+		if(maxCount == txtLen){
+			running = false;
+			$("#startButton").val('Start');
+		}
+
+	setTimeout("monkey()",10);	
+}
+
+
+setUp();
+</script>
+</head>
+<body>
+
+
+<table style="width:960px;margin:auto;" cellpadding="3px">
+<tr>
+<td>Hamlet (or other works):</td>
+<td></td>
+</tr>
+<tr>
+<td width="50%"><textarea style="width:100%;height:150px;" id="inputText"></textarea></td>
+<td width="50%" valign="top">
+<input type="checkbox" id="easy" onclick="$('#fullKey').attr('disabled', this.checked)" /> Stupid Monkey (Faster)<br />
+<input type="checkbox" checked="checked" id="fullKey"/> Full Keyboard(Accurate)*<br />
+<input type="button" value="Start" id="startButton" onclick="running^=1;typeMonkeyType();" /><input type="button" value="Clear" onclick="setUp();" /><br /><br />
+
+Stats:<br /><textarea style="width:100%;height:54px;" disabled="disabled" id="stats"></textarea>
+</td>
+</tr>
+
+
+<tr>
+<td>Monkey Babble:<br /><textarea id="raw" style="width:100%;height:100px;" disabled="disabled"></textarea></td>
+<td>Best Monkey:<br /><textarea id="best" style="width:100%;height:100px;" disabled="disabled"></textarea></td>
+</tr>
+<tr>
+<td colspan="2">
+*Full Keyboard lets the program use every key on a standard keyboard along with probability of hitting a key based on its size.<br />
+Probability is also adjusted for capital letters so either shift or capslock (angry monkey) must have been hit first.<br />
+Altho backspace was also implemented if a monkey gets more than 2 errors he gives up (may add a way to change this).
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
