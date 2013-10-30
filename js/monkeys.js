@@ -59,6 +59,7 @@ function typeMonkeyType(){
 	$('#inputText').attr('disabled', true);
 	
 	text = $("#inputText").val();
+	m = new Monkey(text.split(''), 5);
 	easy = $("#easy").is(':checked');
 	monkeysInBox = $("#monkeyBox").val();
 	fullKeyboard = easy?false:$("#fullKey").is(':checked');
@@ -66,7 +67,7 @@ function typeMonkeyType(){
 	if(easy) text = text.toLowerCase().replace(/[^a-z.\n ]/g, '');
 	txtLen = text.length;
 	
-	monkey();
+	monkeyRun();
 }
 
 
@@ -87,65 +88,36 @@ var getChar = function(keyboard){
 	}
 };
 
-
-function monkey(){
-	if(!running) return;
-
-		monkeyCount++;
-		
-		if(Math.ceil(monkeyCount/monkeysInBox) == monkeyCount/monkeysInBox)$("#raw").val(''); // alows more than one monkey into the bable also slows bable making it readable without slowing monkeys
-		currentCount = -1;
-		errors = 0;
-		monkeyPress = '';
-		//caps = 0;
-		for(x=0;x<txtLen;++x){
-			strChar = text.substr(x, 1);
-			rndChar = getChar(fullKeyboard? keyboard:miniKey);
-			rndChar = caps? rndChar.toUpperCase() : rndChar;
-			
-			$("#raw").val($("#raw").val()+rndChar);
-			monkeyPress += rndChar;
-			
-			con=0;
-			switch(rndChar){
-				case 'BACK':
-					if(errors){
-						--errors;
-					}else if(currentCount+1) --currentCount;
-					x -= x?2:1;
-					con=1;
-					break;
-					
-				case 'CAPS':
-					caps = caps^1;
-					--x;
-					con=1;
-					break;
-			}
-			if(con) continue;
-			
-			if(errors >= 5) break;
-			if(!errors && strChar == rndChar){
-				++currentCount;
-			}else ++errors;
-		}
-		
-		if(currentCount > maxCount){
-			maxCount = currentCount;
-			$("#best").val('Monkey #'+monkeyCount+' - '+(maxCount+1)+' Letter'+(maxCount?'s':'')+'\n________________________\n'+monkeyPress);
-		}
-
-		out = monkeyCount+' Monkeys Created.\n'
-		$("#stats").val(out);
-		
-		
-		if(maxCount == txtLen-1){
-			running = false;
-			$("#startButton").val('Start');
-		}
-
-	setTimeout("monkey()",10);	
-}
+var m;
+var bestM = 0;
+var monkeyRun = function(){
+	if(!running || m.foundString()) return;
+	
+	var rndChar = getChar(fullKeyboard? keyboard:miniKey);
+	rndChar = caps? rndChar.toUpperCase() : rndChar;
+	
+	switch(rndChar){
+		case 'BACK':
+			m.backspace();
+			break;
+		case 'CAPS':
+			caps = caps^1;
+			break;
+		default:
+			m.typeChar(rndChar);
+			break;
+	}
+	
+	$("#raw").val(m);
+	
+	if(m.correctKeys > bestM){
+		bestM = m.correctKeys;
+		$("#best").val(m);
+		$("#best").val(bestM + ' Letter(s)\n________________________\n' + m);
+	}
+	
+	setTimeout("monkeyRun()", 10);	
+};
 
 setUp();
 
