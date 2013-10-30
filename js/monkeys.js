@@ -21,8 +21,9 @@ function typeMonkeyType(){
 	$('#keyboards').attr('disabled', true);
 	
 	var text = $("#inputText").val();
-	m = new Monkey(text.split(''), $("#babbleLen").val());
+	text = currentKeyboard.filter(text);
 	
+	m = new Monkey(text.split(''), $("#babbleLen").val());
 	monkeyRun();
 }
 
@@ -58,7 +59,7 @@ var getChar = function(keyboard){
 var monkeyRun = function(){
 	if(!running || m.foundString()) return;
 	
-	var rndChar = getChar(currentKeyboard);
+	var rndChar = getChar(currentKeyboard.keyboard);
 	rndChar = caps? rndChar.toUpperCase() : rndChar;
 	
 	switch(rndChar){
@@ -87,7 +88,7 @@ $(document).ready(function(){
 	});
 	
 	$("#keyboards").change(function() {
-		currentKeyboard = keyboards[this.value].keyboard;
+		currentKeyboard = keyboards[this.value];
 	});
 	$("#keyboards").trigger("change");
 	

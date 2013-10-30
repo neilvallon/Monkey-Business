@@ -2,6 +2,9 @@ var keyboards = {};
 
 keyboards.miniKey = {name: 'Simplified (uniform/alpha-numeric)'};
 keyboards.miniKey.keyboard = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','.',"\n",' '];
+keyboards.miniKey.filter = function(text){
+	return text.toLowerCase().replace(/[^a-z.\n ]/g, '');
+};
 
 keyboards.QWERTY = {name: 'QWERTY (probabilistic/full)'};
 keyboards.QWERTY.keyboard = [
@@ -42,3 +45,6 @@ keyboards.QWERTY.keyboard = [
 		'keyset': ['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']
 	}
 ];
+keyboards.QWERTY.filter = function(text){
+	return text;
+};
