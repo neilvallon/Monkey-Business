@@ -41,11 +41,6 @@ var keyboard = [
 ];
 
 
-function mt_rand(min, max){
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-
 function setUp(){
 	running = 0;
 	maxCount = -1;
