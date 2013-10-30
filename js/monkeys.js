@@ -2,15 +2,44 @@
 var easy, fullKeyboard, text, running, txtLen, maxCount, monkeyCount, caps, character, monkeysInBox;
 var miniKey = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','.',"\n",' '];
 var keyboard = [
-		[0,		597,	['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']],
-		[598,	700,	' '],
-		[701,	736,	"\n"],
-		[737,	768,	'BACK'],
-		[769,	795,	'CAPS'],
-		[796,	817,	"\t"],
-		[818,	839, 	'\\'],
-		[840,	892,	['~','!','@','#','$','%','^','&','*','(',')','_','+','Q','W','E','R','T','Y','U','I','O','P','{','}','A','S','D','F','G','H','J','K','L',':','"','Z','X','C','V','B','N','M','<','>','?']],
-		[893,	894,	'|']];
+	{
+		'probability': 0.002,
+		'keyset': '|'
+	},
+	{
+		'probability': 0.024,
+		'keyset': '\\'
+	},
+	{
+		'probability': 0.024,
+		'keyset': '\t'
+	},
+	{
+		'probability': 0.034,
+		'keyset': 'CAPS'
+	},
+	{
+		'probability': 0.034,
+		'keyset': 'BACK'
+	},
+	{
+		'probability': 0.039,
+		'keyset': '\n'
+	},
+	{
+		'probability': 0.059,
+		'keyset': ['~','!','@','#','$','%','^','&','*','(',')','_','+','Q','W','E','R','T','Y','U','I','O','P','{','}','A','S','D','F','G','H','J','K','L',':','"','Z','X','C','V','B','N','M','<','>','?']
+	},
+	{
+		'probability': 0.115,
+		'keyset': ' '
+	},
+	{
+		'probability': 0.669,
+		'keyset': ['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']
+	}
+];
+
 
 function mt_rand(min, max){
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -46,18 +75,25 @@ function typeMonkeyType(){
 }
 
 
-function getChar(){
-	if(!fullKeyboard) return miniKey[mt_rand(0,miniKey.length-1)];
-	keyCode = mt_rand(0, keyboard[8][1]);
-	$.each(keyboard, function(key, group){
-		if(keyCode >= keyboard[key][0] && keyCode <= keyboard[key][1]){
-			character = $.isArray(keyboard[key][2])?keyboard[key][2][mt_rand(0, keyboard[key][2].length-1)]:keyboard[key][2];
-			if(caps && key == 0){ character = character.toUpperCase();}
-			return false;
-		}
-	});
-	return character;
-}
+// Asumtion made that input is always a string, an array of strings, or an array of JSON.
+var getChar = function(keyboard){
+	if(!fullKeyboard) return miniKey[mt_rand(0,miniKey.length-1)]; // compatibility
+	
+	if(typeof keyboard === "string")
+		return caps? keyboard.toUpperCase() : keyboard; // compatibility
+	
+	var target = Math.random();
+	if(typeof keyboard[0] === "string")
+		return keyboard[Math.floor(target*keyboard.length)];
+	
+	var x = 0;
+	for(i=0; i<keyboard.length; i++){
+		x += keyboard[i].probability
+		if(x >= target)
+			return getChar(keyboard[i].keyset);
+	}
+};
+
 
 function monkey(){
 	if(!running) return;
@@ -71,7 +107,7 @@ function monkey(){
 		//caps = 0;
 		for(x=0;x<txtLen;++x){
 			strChar = text.substr(x, 1);
-			rndChar = getChar();
+			rndChar = getChar(keyboard);
 			
 			$("#raw").val($("#raw").val()+rndChar);
 			monkeyPress += rndChar;
