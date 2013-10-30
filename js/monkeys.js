@@ -148,3 +148,18 @@ function monkey(){
 }
 
 setUp();
+
+$(document).ready(function(){
+	$("#easy").click(function() {
+		$('#fullKey').attr('disabled', this.checked)
+	});
+	
+	$("#startButton").click(function() {
+		running ^= 1;
+		typeMonkeyType();
+	});
+	
+	$("#clear").click(function() {
+		setUp();
+	});
+});
