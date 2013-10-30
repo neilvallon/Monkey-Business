@@ -5,6 +5,7 @@
 <title>This is not the page you are looking for.</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="js/monkey.js"></script>
+<script src="js/keyboards.js"></script>
 <script src="js/monkeys.js"></script>
 </head>
 
@@ -19,10 +20,14 @@
 				<textarea style="width:100%;height:150px;" id="inputText">To be or maybe not I don't know.</textarea>
 			</td>
 			<td width="50%" valign="top">
-				<input type="checkbox" id="easy" /> Stupid Monkey (Faster)<br />
-				<input type="text" value='50' size="3" id='babbleLen' />Babble Length<br />
+				Keyboard Type: 
+				<select name="options" id="keyboards"></select><br />
+				
+				Babble Length:
+				<input type="text" value='50' size="3" id='babbleLen' /><br />
+				
 				<input type="button" value="Start" id="startButton" />
-				<input type="button" value="Clear" id="clear" /><br /><br />
+				<input type="button" value="Clear" id="clear" /><br /><br /><br />
 			
 				Stats:<br />
 				<textarea style="width:100%;height:31px;" disabled="disabled" id="stats"></textarea>

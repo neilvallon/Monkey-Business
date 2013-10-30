@@ -1,45 +1,5 @@
 //(c) 2011 - Neil Vallon
-var fullKeyboard, m, bestMonkey, running, caps;
-var miniKey = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m','.',"\n",' '];
-var keyboard = [
-	{
-		'probability': 0.002,
-		'keyset': '|'
-	},
-	{
-		'probability': 0.024,
-		'keyset': '\\'
-	},
-	{
-		'probability': 0.024,
-		'keyset': '\t'
-	},
-	{
-		'probability': 0.034,
-		'keyset': 'CAPS'
-	},
-	{
-		'probability': 0.034,
-		'keyset': 'BACK'
-	},
-	{
-		'probability': 0.039,
-		'keyset': '\n'
-	},
-	{
-		'probability': 0.059,
-		'keyset': ['~','!','@','#','$','%','^','&','*','(',')','_','+','Q','W','E','R','T','Y','U','I','O','P','{','}','A','S','D','F','G','H','J','K','L',':','"','Z','X','C','V','B','N','M','<','>','?']
-	},
-	{
-		'probability': 0.115,
-		'keyset': ' '
-	},
-	{
-		'probability': 0.669,
-		'keyset': ['`','1','2','3','4','5','6','7','8','9','0','-','=','q','w','e','r','t','y','u','i','o','p','[',']','a','s','d','f','g','h','j','k','l',';',"'",'z','x','c','v','b','n','m',',','.','/']
-	}
-];
-
+var currentKeyboard, m, bestMonkey, running, caps;
 
 function setUp(){
 	running = false;
@@ -51,23 +11,31 @@ function setUp(){
 	$("#stats").val('');
 	$("#best").val('');
 	$('#inputText').attr('disabled', false);
+	$('#keyboards').attr('disabled', false);
 }
 
 
 function typeMonkeyType(){
 	$("#startButton").val(function (){ return ($("#startButton").val() == 'Start')?'Stop':'Start'; }); //Change Button
 	$('#inputText').attr('disabled', true);
+	$('#keyboards').attr('disabled', true);
 	
 	var text = $("#inputText").val();
-	fullKeyboard = !$("#easy").is(':checked');
-	
-	if(!fullKeyboard)
-		text = text.toLowerCase().replace(/[^a-z.\n ]/g, '');
-	
 	m = new Monkey(text.split(''), $("#babbleLen").val());
+	
 	monkeyRun();
 }
 
+
+var refreshOutput = function(){
+	$("#raw").val(m);
+	
+	if(m.correctKeys > bestMonkey){
+		bestMonkey = m.correctKeys;
+		$("#best").val(m);
+		$("#best").val(bestMonkey + ' Letter(s)\n________________________\n' + m);
+	}
+};
 
 // Asumtion made that input is always a string, an array of strings, or an array of JSON.
 var getChar = function(keyboard){
@@ -90,7 +58,7 @@ var getChar = function(keyboard){
 var monkeyRun = function(){
 	if(!running || m.foundString()) return;
 	
-	var rndChar = getChar(fullKeyboard? keyboard:miniKey);
+	var rndChar = getChar(currentKeyboard);
 	rndChar = caps? rndChar.toUpperCase() : rndChar;
 	
 	switch(rndChar){
@@ -105,20 +73,24 @@ var monkeyRun = function(){
 			break;
 	}
 	
-	$("#raw").val(m);
-	
-	if(m.correctKeys > bestMonkey){
-		bestMonkey = m.correctKeys;
-		$("#best").val(m);
-		$("#best").val(bestMonkey + ' Letter(s)\n________________________\n' + m);
-	}
-	
+	refreshOutput();
 	setTimeout("monkeyRun()", 10);	
 };
 
 setUp();
 
 $(document).ready(function(){
+	// Generate Keyboard Options
+	$.each(keyboards, function(key, value){
+		$('#keyboards')
+			.append( $('<option>', {'value':key}).text(value.name) );
+	});
+	
+	$("#keyboards").change(function() {
+		currentKeyboard = keyboards[this.value].keyboard;
+	});
+	$("#keyboards").trigger("change");
+	
 	$("#startButton").click(function() {
 		running ^= 1;
 		typeMonkeyType();
