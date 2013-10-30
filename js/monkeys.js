@@ -77,10 +77,8 @@ function typeMonkeyType(){
 
 // Asumtion made that input is always a string, an array of strings, or an array of JSON.
 var getChar = function(keyboard){
-	if(!fullKeyboard) return miniKey[mt_rand(0,miniKey.length-1)]; // compatibility
-	
 	if(typeof keyboard === "string")
-		return caps? keyboard.toUpperCase() : keyboard; // compatibility
+		return keyboard;
 	
 	var target = Math.random();
 	if(typeof keyboard[0] === "string")
@@ -107,7 +105,8 @@ function monkey(){
 		//caps = 0;
 		for(x=0;x<txtLen;++x){
 			strChar = text.substr(x, 1);
-			rndChar = getChar(keyboard);
+			rndChar = getChar(fullKeyboard? keyboard:miniKey);
+			rndChar = caps? rndChar.toUpperCase() : rndChar;
 			
 			$("#raw").val($("#raw").val()+rndChar);
 			monkeyPress += rndChar;
