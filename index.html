@@ -1,49 +1,64 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>This is not the page you are looking for.</title>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+	textarea{
+		width:100%;
+		height:150px;
+	}
+	.container{
+		padding-top:25px;
+	}
+</style>
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
 <script src="js/monkey.js"></script>
 <script src="js/keyboards.js"></script>
 <script src="js/monkeys.js"></script>
 </head>
 
 <body>
-	<table style="width:900px;margin:auto;" cellpadding="6px" cellspacing="4">
-		<tr>
-			<td>Hamlet (or other works):</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td width="50%">
-				<textarea style="width:100%;height:150px;" id="inputText">To be or maybe not I don't know.</textarea>
-			</td>
-			<td width="50%" valign="top">
-				Keyboard Type: 
-				<select name="options" id="keyboards"></select><br />
-				
-				Babble Length:
-				<input type="text" value='50' size="3" id='babbleLen' /><br />
-				
-				<input type="button" value="Start" id="startButton" />
-				<input type="button" value="Clear" id="clear" /><br /><br /><br />
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="inputText">Hamlet (or other works)</label>
+					<textarea id="inputText">To be or maybe not I don't know.</textarea>
+				</div>
+			</div>
 			
-				Stats:<br />
-				<textarea style="width:100%;height:31px;" disabled="disabled" id="stats"></textarea>
-			</td>
-		</tr>
-
-
-		<tr>
-			<td>
-				Monkey Babble:<br />
-				<textarea id="raw" style="width:100%;height:100px;" disabled="disabled"></textarea></td>
-			<td>
-				Best Monkey:<br />
-				<textarea id="best" style="width:100%;height:100px;" disabled="disabled"></textarea>
-			</td>
-		</tr>
-	</table>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="keyboards">Keyboard Type</label>
+					<select name="options" id="keyboards" class="form-control"></select>
+				</div>
+				
+				<button type="button" class="btn btn-default btn-lg btn-block" id="startButton">Start</button>
+				<button type="button" class="btn btn-danger btn-lg btn-block" id="clear">Clear</button>
+				
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="raw">Monkey Babble</label>
+					<textarea id="raw" disabled="disabled"></textarea>
+				</div>
+			</div>
+			
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="best">Best Monkey</label>
+					<textarea id="best" disabled="disabled"></textarea>
+				</div>
+			</div>
+			
+		</div>
+	</div>
 </body>
 </html>

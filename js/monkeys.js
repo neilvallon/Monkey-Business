@@ -6,9 +6,8 @@ function setUp(){
 	caps = 0;
 	bestMonkey = 0;
 	
-	$("#startButton").val('Start');
+	$("#startButton").text('Start');
 	$("#raw").val('');
-	$("#stats").val('');
 	$("#best").val('');
 	$('#inputText').attr('disabled', false);
 	$('#keyboards').attr('disabled', false);
@@ -16,14 +15,14 @@ function setUp(){
 
 
 function typeMonkeyType(){
-	$("#startButton").val(function (){ return ($("#startButton").val() == 'Start')?'Stop':'Start'; }); //Change Button
+	$("#startButton").text(function (){ return ($("#startButton").text() == 'Start')?'Stop':'Start'; }); //Change Button
 	$('#inputText').attr('disabled', true);
 	$('#keyboards').attr('disabled', true);
 	
 	var text = $("#inputText").val();
 	text = currentKeyboard.filter(text);
 	
-	m = new Monkey(text.split(''), $("#babbleLen").val());
+	m = new Monkey(text.split(''), 50);
 	monkeyRun();
 }
 
