@@ -1,31 +1,7 @@
-//(c) 2011 - Neil Vallon
-var currentKeyboard, m, bestMonkey, running, caps;
-
-function setUp(){
-	running = false;
-	caps = 0;
-	bestMonkey = 0;
-	
-	$("#startButton").text('Start');
-	$("#raw").val('');
-	$("#best").val('');
-	$('#inputText').attr('disabled', false);
-	$('#keyboards').attr('disabled', false);
-}
-
-
-function typeMonkeyType(){
-	$("#startButton").text(running?'Stop':'Start');
-	$('#inputText').attr('disabled', true);
-	$('#keyboards').attr('disabled', true);
-	
-	var text = $("#inputText").val();
-	text = currentKeyboard.filter(text);
-	
-	m = new Monkey(text.split(''), 50);
-	monkeyRun();
-}
-
+var currentKeyboard, m;
+var running = false;
+var caps = 0;
+var bestMonkey = 0;
 
 var refreshOutput = function(){
 	$("#raw").val(m);
@@ -77,26 +53,47 @@ var monkeyRun = function(){
 	setTimeout("monkeyRun()", 10);	
 };
 
-setUp();
+
+var typeMonkeyType = function(){
+	$("#startButton").text(running?'Stop':'Start');
+	$('#inputText').attr('disabled', true);
+	$('#keyboards').attr('disabled', true);
+	
+	var text = $("#inputText").val();
+	text = currentKeyboard.filter(text);
+	
+	m = new Monkey(text.split(''), 50);
+	monkeyRun();
+}
+
 
 $(document).ready(function(){
 	// Generate Keyboard Options
 	$.each(keyboards, function(key, value){
-		$('#keyboards')
-			.append( $('<option>', {'value':key}).text(value.name) );
+		$('#keyboards').append( $('<option>', {'value':key}).text(value.name) );
 	});
+	
 	
 	$("#keyboards").change(function() {
 		currentKeyboard = keyboards[this.value];
-	});
-	$("#keyboards").trigger("change");
+	}); $("#keyboards").trigger("change");
+	
 	
 	$("#startButton").click(function() {
 		running ^= 1;
 		typeMonkeyType();
 	});
 	
+	
 	$("#clear").click(function() {
-		setUp();
+		running = false;
+		caps = 0;
+		bestMonkey = 0;
+	
+		$("#startButton").text('Start');
+		$("#raw").val('');
+		$("#best").val('');
+		$('#inputText').attr('disabled', false);
+		$('#keyboards').attr('disabled', false);
 	});
 });
