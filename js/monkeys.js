@@ -15,7 +15,7 @@ function setUp(){
 
 
 function typeMonkeyType(){
-	$("#startButton").text(function (){ return ($("#startButton").text() == 'Start')?'Stop':'Start'; }); //Change Button
+	$("#startButton").text(running?'Stop':'Start');
 	$('#inputText').attr('disabled', true);
 	$('#keyboards').attr('disabled', true);
 	
