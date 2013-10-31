@@ -55,14 +55,13 @@ var monkeyRun = function(){
 
 
 var typeMonkeyType = function(){
-	$("#startButton").text(running?'Stop':'Start');
-	$('#inputText').attr('disabled', true);
-	$('#keyboards').attr('disabled', true);
+	if(m == null){
+		var text = $("#inputText").val();
+		text = currentKeyboard.filter(text);
+		
+		m = new Monkey(text.split(''), 50);
+	}
 	
-	var text = $("#inputText").val();
-	text = currentKeyboard.filter(text);
-	
-	m = new Monkey(text.split(''), 50);
 	monkeyRun();
 };
 
@@ -81,15 +80,21 @@ $(document).ready(function(){
 	
 	$("#startButton").click(function() {
 		running ^= true;
+		
+		$("#startButton").text(running?'Stop':'Start');
+		$('#inputText').attr('disabled', true);
+		$('#keyboards').attr('disabled', true);
+		
 		typeMonkeyType();
 	});
 	
 	
 	$("#clear").click(function() {
 		running = false;
+		m = null;
 		caps = 0;
 		bestMonkey = 0;
-	
+		
 		$("#startButton").text('Start');
 		$("#raw").val('');
 		$("#best").val('');
