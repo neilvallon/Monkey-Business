@@ -8,7 +8,7 @@ var Monkey = function(goal, errTolerance){
 };
 
 Monkey.prototype.correctChars = function(){
-	for(i=0; i<this.goal.length; i++)
+	for(var i=0; i<this.goal.length; i++)
 		if(this.paper[i] != this.goal[i])
 			break;
 	return i;
@@ -18,8 +18,8 @@ Monkey.prototype.foundString = function(){
 	return this.goalLen == this.correctKeys;
 };
 
-Monkey.prototype.typeChar = function(char){
-	this.paper.push(char);
+Monkey.prototype.typeChar = function(key){
+	this.paper.push(key);
 	
 	if(this.paper[this.correctKeys] == this.goal[this.correctKeys])
 		this.correctKeys++;
@@ -32,7 +32,7 @@ Monkey.prototype.typeChar = function(char){
 
 Monkey.prototype.backspace = function(){
 	if(this.correctKeys && this.paper.length <= this.correctKeys)
-		this.correctKeys -= 1;
+		this.correctKeys--;
 	return this.paper.pop();
 };
 

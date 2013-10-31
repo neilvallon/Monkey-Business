@@ -23,8 +23,8 @@ var getChar = function(keyboard){
 		return keyboard[Math.floor(target*keyboard.length)];
 	
 	var x = 0;
-	for(i=0; i<keyboard.length; i++){
-		x += keyboard[i].probability
+	for(var i=0; i<keyboard.length; i++){
+		x += keyboard[i].probability;
 		if(x >= target)
 			return getChar(keyboard[i].keyset);
 	}
@@ -42,7 +42,7 @@ var monkeyRun = function(){
 			m.backspace();
 			break;
 		case 'CAPS':
-			caps = caps^1;
+			caps ^= true;
 			break;
 		default:
 			m.typeChar(rndChar);
@@ -50,7 +50,7 @@ var monkeyRun = function(){
 	}
 	
 	refreshOutput();
-	setTimeout("monkeyRun()", 10);	
+	setTimeout(monkeyRun, 10);	
 };
 
 
@@ -64,7 +64,7 @@ var typeMonkeyType = function(){
 	
 	m = new Monkey(text.split(''), 50);
 	monkeyRun();
-}
+};
 
 
 $(document).ready(function(){
@@ -80,7 +80,7 @@ $(document).ready(function(){
 	
 	
 	$("#startButton").click(function() {
-		running ^= 1;
+		running ^= true;
 		typeMonkeyType();
 	});
 	
