@@ -44,6 +44,8 @@ var monkeyRun = function(){
 		case 'CAPS':
 			caps ^= true;
 			break;
+		case 'NULL':
+			break;
 		default:
 			m.typeChar(rndChar);
 			break;
