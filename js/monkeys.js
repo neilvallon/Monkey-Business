@@ -28,6 +28,12 @@ var getChar = function(keyboard){
 		if(x >= target)
 			return getChar(keyboard[i].keyset);
 	}
+	
+	// JS will probably error out before it's able to reach this line.
+	// Once fixed this will keep things running and skip a key on error.
+	console.log('Error: Could not find key in');
+	console.log(keyboard);
+	return 'NULL';
 };
 
 
